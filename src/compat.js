@@ -4,62 +4,78 @@
  * @licence GPL v3
  */
 
-(function() {
+(function () {
+  Registry.require("helper");
 
-Registry.require('helper');
+  const Helper = Registry.get("helper");
 
-var Helper = Registry.get('helper');
-
-var compaMo = {
-    mkCompat : function(src, script, test) {
-        if (script) {
-            if (script.options.compat_metadata || test) src = compaMo.unMetaDataify(src);
-            if (script.options.compat_foreach || test) src = compaMo.unEachify(src);
-            if (script.options.compat_arrayleft || test) src = compaMo.unArrayOnLeftSideify(src);
-            if (script.options.compat_forvarin /* || test */) src = compaMo.fixForVarXStatements(src);
+  var compaMo = {
+    mkCompat: function (src, script, test) {
+      if (script) {
+        if (script.options.compat_metadata || test) {
+          src = compaMo.unMetaDataify(src);
         }
-        /* it's a shame, but TM does not support "strict mode" scripts at the moment :(
+        if (script.options.compat_foreach || test) src = compaMo.unEachify(src);
+        if (script.options.compat_arrayleft || test) {
+          src = compaMo.unArrayOnLeftSideify(src);
+        }
+        if (script.options.compat_forvarin /* || test */) {
+          src = compaMo.fixForVarXStatements(src);
+        }
+      }
+      /* it's a shame, but TM does not support "strict mode" scripts at the moment :(
            setID + getID are not working due to callee restrictions tmf:322 */
-        src = src.replace('"use strict"', '"use\u00A0strict"')
+      src = src.replace('"use strict"', '"use\u00A0strict"');
 
-        return src;
+      return src;
     },
 
-    findPrototypes : function(src) {
-        if (src.search(Helper.escapeForRegExp('.toSource(')) != -1) {
-            return true;
+    findPrototypes: function (src) {
+      if (src.search(Helper.escapeForRegExp(".toSource(")) != -1) {
+        return true;
+      }
+      const fns = [
+        "indexOf",
+        "lastIndexOf",
+        "filter",
+        "forEach",
+        "every",
+        "map",
+        "some",
+        "slice",
+      ];
+      for (const k in fns) {
+        if (src.search(Helper.escapeForRegExp("Array." + fns[k] + "(")) != -1) {
+          return true;
         }
-        var fns = ["indexOf", "lastIndexOf", "filter", "forEach", "every", "map", "some", "slice"];
-        for (var k in fns) {
-            if (src.search(Helper.escapeForRegExp('Array.' + fns[k] + '(')) != -1) {
-                return true;
-            }
-        }
+      }
     },
 
     // for (var handler in events[ type ] )
-    fixForVarXStatements : function(src) {
-        src = src.replace(/for[ \t.]*\([ \t.]*var/gi, 'for (var');
+    fixForVarXStatements: function (src) {
+      src = src.replace(/for[ \t.]*\([ \t.]*var/gi, "for (var");
 
-        var t1 = 'for (';
-        var t3 = ')';
+      const t1 = "for (";
+      const t3 = ")";
 
-        var arr = src.split(t1);
+      const arr = src.split(t1);
 
-        for (var i = 1; i < arr.length; i++) {
-            var a = arr[i];
-            var e = a.search(Helper.escapeForRegExp(t3));
-            if (e == -1) continue;
-            var f = a.substr(0, e);
-            if (f.search(/[ \r\n]*in[ \r\n]/) == -1) continue;
-            var aw = f.match(/^[ \r\n]*(?:var[ \r\n\t]*)*(.*?)[ \r\n]* in [ \r\n]*(.*?)$/);
+      for (let i = 1; i < arr.length; i++) {
+        const a = arr[i];
+        const e = a.search(Helper.escapeForRegExp(t3));
+        if (e == -1) continue;
+        const f = a.substr(0, e);
+        if (f.search(/[ \r\n]*in[ \r\n]/) == -1) continue;
+        const aw = f.match(
+          /^[ \r\n]*(?:var[ \r\n\t]*)*(.*?)[ \r\n]* in [ \r\n]*(.*?)$/,
+        );
 
-            if (aw == null || aw.length < 3) continue;
-            var varname = aw[1];
-            var inname = 'in';
-            var arrname = aw[2];
+        if (aw == null || aw.length < 3) continue;
+        const varname = aw[1];
+        const inname = "in";
+        const arrname = aw[2];
 
-            /*
+        /*
             var m = f.split(' ');
             var varname = null;
             var inname = null;
@@ -74,26 +90,32 @@ var compaMo = {
                         arrname = m[r];
                     }
                 }
-            }*/
+            } */
 
-            if (!varname || !arrname || inname != 'in' || e > a.length) {
-                continue;
-            }
-            var p = a.search(/\)[\n\r\t ]*\{/);
-            if (p != e) {
-                continue;
-                /* if (Helper.getStringBetweenTags(arr[i], ')', '\n').trim() == "") {
+        if (!varname || !arrname || inname != "in" || e > a.length) {
+          continue;
+        }
+        const p = a.search(/\)[\n\r\t ]*\{/);
+        if (p != e) {
+          continue;
+          /* if (Helper.getStringBetweenTags(arr[i], ')', '\n').trim() == "") {
                    arr[i] = arr[i].replace(')','){').replace(/([\n|\r].*[\n|\r|;])/, '$1}');
                    } else {
                    arr[i] = arr[i].replace(')','){').replace(/([\n|\r|;])/, '}$1');
                    } */
-            }
-            var b = '';
-            b += '{ ' + '    if (!' + arrname + '.hasOwnProperty(' + varname + ')) continue;';
-            arr[i] = arr[i].replace('{', b);
         }
+        let b = "";
+        b +=
+          "{ " +
+          "    if (!" +
+          arrname +
+          ".hasOwnProperty(" +
+          varname +
+          ")) continue;";
+        arr[i] = arr[i].replace("{", b);
+      }
 
-        return arr.join(t1);
+      return arr.join(t1);
     },
 
     /*
@@ -111,43 +133,42 @@ var compaMo = {
      *  ...
      *
      */
-    unArrayOnLeftSideify : function(src) {
+    unArrayOnLeftSideify: function (src) {
+      const lines = src.split("\n");
 
-        var lines = src.split('\n');
-
-        for (var k in lines) {
-            var line = lines[k];
-            var wosp = line.replace(/[\t ]/g, '');
-            var a1 = wosp.search(']=');
-            var a2 = wosp.search(']==');
-            var k1 = wosp.search('\\[');
-            if (k1 != -1) {
-                var ee = wosp.substr(0, k1);
-                // seems to be a valid array assignement like a[0] = 'blub';
-                if (ee != '') a1 = -1;
-            }
-
-            if (a1 != -1 && a1 != a2) {
-                var nl = '';
-                // stupid hack detected!
-                var ie = line.search("=");
-                var value = line.substr(ie+1, line.length-ie-1);
-                var randvar = '__narf' + k.toString();
-
-                nl += 'var ' + randvar + ' = ' + value + ';\n';
-
-                var vars = Helper.getStringBetweenTags(wosp, '[', ']=');
-                var vara = vars.split(',');
-
-                for (var e in vara) {
-                    var v = vara[e];
-                    if (v.trim() != '') nl += v + ' = ' + randvar + '[' + e + '];\n';
-                }
-                lines[k] = nl;
-            }
+      for (const k in lines) {
+        const line = lines[k];
+        const wosp = line.replace(/[\t ]/g, "");
+        let a1 = wosp.search("]=");
+        const a2 = wosp.search("]==");
+        const k1 = wosp.search("\\[");
+        if (k1 != -1) {
+          const ee = wosp.substr(0, k1);
+          // seems to be a valid array assignement like a[0] = 'blub';
+          if (ee != "") a1 = -1;
         }
 
-        return lines.join('\n');
+        if (a1 != -1 && a1 != a2) {
+          let nl = "";
+          // stupid hack detected!
+          const ie = line.search("=");
+          const value = line.substr(ie + 1, line.length - ie - 1);
+          const randvar = "__narf" + k.toString();
+
+          nl += "var " + randvar + " = " + value + ";\n";
+
+          const vars = Helper.getStringBetweenTags(wosp, "[", "]=");
+          const vara = vars.split(",");
+
+          for (const e in vara) {
+            const v = vara[e];
+            if (v.trim() != "") nl += v + " = " + randvar + "[" + e + "];\n";
+          }
+          lines[k] = nl;
+        }
+      }
+
+      return lines.join("\n");
     },
 
     /*
@@ -164,52 +185,52 @@ var compaMo = {
      *     ...
      *
      */
-    unEachify : function(src) {
-        src = src.replace(/for each[ \t]*\(/gi, 'for each(');
+    unEachify: function (src) {
+      src = src.replace(/for each[ \t]*\(/gi, "for each(");
 
-        var t1 = 'for each';
-        var t2 = '(';
-        var t3 = ')';
+      const t1 = "for each";
+      const t2 = "(";
+      const t3 = ")";
 
-        var arr = src.split(t1);
+      const arr = src.split(t1);
 
-        for (var i = 1; i < arr.length; i++) {
-            var a = arr[i];
-            if (a.substr(0,1) != "(") {
-                arr[i] = ' each' + arr[i];
-                continue;
+      for (let i = 1; i < arr.length; i++) {
+        const a = arr[i];
+        if (a.substr(0, 1) != "(") {
+          arr[i] = " each" + arr[i];
+          continue;
+        }
+        const f = Helper.getStringBetweenTags(a, t2, t3);
+        const m = f.split(" ");
+        let varname = null;
+        let inname = null;
+        let arrname = null;
+        for (const e in m) {
+          if (m[e] != "" && m[e] != "var") {
+            if (!varname) {
+              varname = m[e];
+            } else if (!inname) {
+              inname = m[e];
+            } else if (!arrname) {
+              arrname = m[e];
             }
-            var f = Helper.getStringBetweenTags(a, t2, t3);
-            var m = f.split(' ');
-            var varname = null;
-            var inname = null;
-            var arrname = null;
-            for (var e in m) {
-                if (m[e] != '' && m[e] != 'var') {
-                    if (!varname) {
-                        varname = m[e];
-                    } else if (!inname) {
-                        inname = m[e];
-                    } else if (!arrname) {
-                        arrname = m[e];
-                    }
-                }
-            }
-            if (!varname || !arrname) {
-                arr[i] = ' each' + arr[i];
-                continue;
-            }
-
-            var n = 'var __kk in ' + arrname;
-            var b = '';
-            // filter the Array.prototype.filter function :-/
-            b += '{\n' + '    if (!' + arrname + '.hasOwnProperty(__kk)) continue;';
-            b += ' \n' + '    var ' + varname + ' = ' + arrname + '[__kk];';
-
-            arr[i] = arr[i].replace(Helper.escapeForRegExp(f), n).replace('{', b);
+          }
+        }
+        if (!varname || !arrname) {
+          arr[i] = " each" + arr[i];
+          continue;
         }
 
-        return arr.join('for');
+        const n = "var __kk in " + arrname;
+        let b = "";
+        // filter the Array.prototype.filter function :-/
+        b += "{\n" + "    if (!" + arrname + ".hasOwnProperty(__kk)) continue;";
+        b += " \n" + "    var " + varname + " = " + arrname + "[__kk];";
+
+        arr[i] = arr[i].replace(Helper.escapeForRegExp(f), n).replace("{", b);
+      }
+
+      return arr.join("for");
     },
 
     /*
@@ -235,40 +256,39 @@ var compaMo = {
      *   ...
      *
      */
-    unMetaDataify : function(src) {
-        var s = src;
-        var t = src;
-        var t1 = '<><![CDATA[';
-        var t2 = ']]></>';
-        var pos = s.search(Helper.escapeForRegExp(t1));
-        while (pos != -1) {
-            var p = s.substr(0, pos);
-            var lc = p.lastIndexOf('\n');
-            var cc = '';
-            if (lc != -1) cc = p.substr(lc, p.length - lc);
-            s = s.substr(pos, s.length-pos);
+    unMetaDataify: function (src) {
+      let s = src;
+      let t = src;
+      const t1 = "<><![CDATA[";
+      const t2 = "]]></>";
+      let pos = s.search(Helper.escapeForRegExp(t1));
+      while (pos != -1) {
+        const p = s.substr(0, pos);
+        const lc = p.lastIndexOf("\n");
+        let cc = "";
+        if (lc != -1) cc = p.substr(lc, p.length - lc);
+        s = s.substr(pos, s.length - pos);
 
-            // check if commented
-            var c1 = cc.search("\\/\\*");
-            var c2 = cc.search("\\/\\/");
-            if (c1 == -1 &&
-                c2 == -1) {
-                var z = Helper.getStringBetweenTags(s,t1, t2);
-                var x;
-                x = z.replace(/\"/g, '\\"').replace(/\n/g, '\\n" + \n"');
-                x = x.replace(/^\n/g, '').replace(/\n$/g, '');
-                // remove Windows line ending stuff
-                x = x.replace(/\r/g, '');
-                var g = t1+z+t2;
-                t = t.replace(g, '(new CDATA("' + x + '"))');
-            }
-            s = s.substr(1, s.length-1);
-            pos = s.search(Helper.escapeForRegExp(t1));
+        // check if commented
+        const c1 = cc.search("\\/\\*");
+        const c2 = cc.search("\\/\\/");
+        if (c1 == -1 && c2 == -1) {
+          const z = Helper.getStringBetweenTags(s, t1, t2);
+          var x;
+          x = z.replace(/\"/g, '\\"').replace(/\n/g, '\\n" + \n"');
+          x = x.replace(/^\n/g, "").replace(/\n$/g, "");
+          // remove Windows line ending stuff
+          x = x.replace(/\r/g, "");
+          const g = t1 + z + t2;
+          t = t.replace(g, '(new CDATA("' + x + '"))');
         }
+        s = s.substr(1, s.length - 1);
+        pos = s.search(Helper.escapeForRegExp(t1));
+      }
 
-        return t;
-    }
-};
+      return t;
+    },
+  };
 
-Registry.register('compat', compaMo);
-})()
+  Registry.register("compat", compaMo);
+})();

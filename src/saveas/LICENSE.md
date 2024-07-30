@@ -1,7 +1,6 @@
 This software is licensed under the MIT/X11 license.
 
-MIT/X11 license
----------------
+## MIT/X11 license
 
 Copyright &copy; 2011 [Eli Grey][1].
 
@@ -26,5 +25,4 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
-
-  [1]: http://eligrey.com
+[1]: http://eligrey.com

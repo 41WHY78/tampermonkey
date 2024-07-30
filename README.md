@@ -1,18 +1,20 @@
-*This repository contains the source of the Tampermonkey extension up to version 2.9.*
-*All newer versions are distributed under a proprietary license.*
+_This repository contains the source of the Tampermonkey extension up to version 2.9._
+_All newer versions are distributed under a proprietary license._
 
 Tampermonkey is the most popular userscript manager for Google Chrome.
 
 Features:
- - manage and edit all your userscripts
- - enable and disable your scripts with 2 clicks
- - easily sync you scripts between different Chrome instances
- - search scripts from userscripts.org by URL (with TamperFire enabled)
+
+- manage and edit all your userscripts
+- enable and disable your scripts with 2 clicks
+- easily sync you scripts between different Chrome instances
+- search scripts from userscripts.org by URL (with TamperFire enabled)
 
 Beneath of other tags, functions and features the following ones are supported:
- - full unsafeWindow access
- - all GM_* functions including (GM_registerMenuCommand, GM_getResourceText, GM_getResourceURL, GM_notification)
- - a lot of tags supported by Greasemonkey and Scriptish (like @resource, @require, ...)
+
+- full unsafeWindow access
+- all GM\_\* functions including (GM_registerMenuCommand, GM_getResourceText, GM_getResourceURL, GM_notification)
+- a lot of tags supported by Greasemonkey and Scriptish (like @resource, @require, ...)
 
 For a full overview please take a look at the FAQ or just install TM. ;)
 
@@ -27,17 +29,17 @@ http://tampermonkey.net/donate.html
 
 DOWNLOADS:
 
-Tampermonkey (stable): 
-   https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo
+Tampermonkey (stable):
+https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo
 
 Tampermonkey (beta): developer version, might contain bugs!
-   https://chrome.google.com/webstore/detail/gcalenpjmijncebpfijmoaglllgpjagf
+https://chrome.google.com/webstore/detail/gcalenpjmijncebpfijmoaglllgpjagf
 
 Tampermonkey (Legacy - Manifest version 1): for browsers based on Chromimum 17.
-   http://tampermonkey.net/crx/tm_legacy.crx
+http://tampermonkey.net/crx/tm_legacy.crx
 
 Tampermonkey (retro): very old version 1.1.2190, no support!
-   http://tampermonkey.net/crx/tampermonkey_retro.crx
+http://tampermonkey.net/crx/tampermonkey_retro.crx
 
 ---
 
@@ -57,9 +59,9 @@ Report Bugs: http://tampermonkey.net/bug
 
 ---
 
-LICENSE: 
+LICENSE:
 
-GPLv3.  See COPYING for details.
+GPLv3. See COPYING for details.
 
 ---
 
@@ -89,8 +91,8 @@ chromium-browser --pack-extension=rel/
 
 ls -la now shows two new files:
 
--rw-r--r--  1 user user 305170 Aug 29 09:09 rel.crx
--rw-r--r--  1 user user    916 Aug 29 09:09 rel.pem
+-rw-r--r-- 1 user user 305170 Aug 29 09:09 rel.crx
+-rw-r--r-- 1 user user 916 Aug 29 09:09 rel.pem
 
 rel.crx is the Chrome extension, rel.pem the key to create another Tampermonkey extension file with the same extension ID
 
