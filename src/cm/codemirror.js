@@ -710,7 +710,7 @@ window.CodeMirror = (function () {
 
       if (!focused) onFocus();
 
-      const now = +new Date();
+      const now = Number(new Date());
       let type = "single";
       if (
         lastDoubleClick &&
@@ -850,7 +850,7 @@ window.CodeMirror = (function () {
       let pos = posFromMouse(e, true);
       const files = e.dataTransfer.files;
       if (!pos || options.readOnly) return;
-      if (files && files.length && window.FileReader && window.File) {
+      if (files?.length && window.FileReader && window.File) {
         const n = files.length;
         var text = Array(n);
         let read = 0;
@@ -1806,13 +1806,13 @@ window.CodeMirror = (function () {
             let text = options.lineNumbers
               ? options.lineNumberFormatter(i + options.firstLineNumber)
               : null;
-            if (marker && marker.text) {
+            if (marker?.text) {
               text = marker.text.replace("%N%", text != null ? text : "");
             } else if (text == null) {
               text = "\u00a0";
             }
             const markerElement = fragment.appendChild(
-              elt("pre", null, marker && marker.style),
+              elt("pre", null, marker?.style),
             );
             markerElement.innerHTML = text;
             for (let j = 1; j < line.height; ++j) {
@@ -2410,8 +2410,8 @@ window.CodeMirror = (function () {
         line: n,
         handle: line,
         text: line.text,
-        markerText: marker && marker.text,
-        markerClass: marker && marker.style,
+        markerText: marker?.text,
+        markerClass: marker?.style,
         lineClass: line.className,
         bgClass: line.bgClassName,
       };
@@ -2754,7 +2754,7 @@ window.CodeMirror = (function () {
         );
       const clear = operation(function () {
         one.clear();
-        two && two.clear();
+        two?.clear();
       });
       if (autoclear) setTimeout(clear, 800);
       else bracketHighlighted = clear;
@@ -2793,7 +2793,7 @@ window.CodeMirror = (function () {
     }
     function highlightWorker() {
       if (frontier >= showingTo) return;
-      const end = +new Date() + options.workTime;
+      const end = Number(new Date()) + options.workTime;
       const state = copyState(mode, getStateBefore(frontier));
       const startFrontier = frontier;
       doc.iter(frontier, showingTo, function (line) {
@@ -2806,7 +2806,7 @@ window.CodeMirror = (function () {
           line.stateAfter = frontier % 5 == 0 ? copyState(mode, state) : null;
         }
         ++frontier;
-        if (+new Date() > end) {
+        if (Number(new Date()) > end) {
           startWorker(options.workDelay);
           return true;
         }
@@ -2858,7 +2858,7 @@ window.CodeMirror = (function () {
         updated = updateDisplay(
           changes,
           true,
-          newScrollPos && newScrollPos.scrollTop,
+          newScrollPos?.scrollTop,
         );
       }
       if (!updated) {
@@ -3451,7 +3451,7 @@ window.CodeMirror = (function () {
     },
     eatSpace: function () {
       const start = this.pos;
-      while (/[\s\u00a0]/.test(this.string.charAt(this.pos))) ++this.pos;
+      while (/[\s\u00a0]/u.test(this.string.charAt(this.pos))) ++this.pos;
       return this.pos > start;
     },
     skipToEnd: function () {
@@ -3755,7 +3755,7 @@ window.CodeMirror = (function () {
     getContent: function (tabSize, wrapAt, compensateForWrapping) {
       let first = true;
       let col = 0;
-      const specials = /[\t\u0000-\u0019\u200b\u2028\u2029\uFEFF]/g;
+      const specials = /[\t\u0000-\u0019\u200b\u2028\u2029\uFEFF]/gu;
       const pre = elt("pre");
       function span_(html, text, style) {
         if (!text) return;
@@ -4173,7 +4173,7 @@ window.CodeMirror = (function () {
   History.prototype = {
     addChange: function (start, added, old) {
       this.undone.length = 0;
-      const time = +new Date();
+      const time = Number(new Date());
       const cur = lst(this.done);
       const last = cur && lst(cur);
       const dtime = time - this.time;
@@ -4333,7 +4333,7 @@ window.CodeMirror = (function () {
   // Used mostly to find indentation.
   function countColumn(string, end, tabSize) {
     if (end == null) {
-      end = string.search(/[^\s\u00a0]/);
+      end = string.search(/[^\s\u00a0]/u);
       if (end == -1) end = string.length;
     }
     for (var i = 0, n = 0; i < end; ++i) {
@@ -4445,7 +4445,7 @@ window.CodeMirror = (function () {
     return -1;
   }
   const nonASCIISingleCaseWordChar =
-    /[\u3040-\u309f\u30a0-\u30ff\u3400-\u4db5\u4e00-\u9fcc]/;
+    /[\u3040-\u309f\u30a0-\u30ff\u3400-\u4db5\u4e00-\u9fcc]/u;
   function isWordChar(ch) {
     return (
       /\w/.test(ch) ||

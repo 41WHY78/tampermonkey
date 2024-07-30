@@ -194,7 +194,7 @@
   };
 
   const encodeHtml = function (str) {
-    return str.replace(/[\u00A0-\u2666]/g, function (c) {
+    return str.replace(/[\u00A0-\u2666]/gu, function (c) {
       return "&#" + c.charCodeAt(0) + ";";
     });
   };

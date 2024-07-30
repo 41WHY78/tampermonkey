@@ -46,7 +46,7 @@ Registry.require("syncinfo");
   /* ########### callbacks ############## */
   const gCallbacks = {};
   const gCb = function (id, fn) {
-    if (gCallbacks[id] && gCallbacks[id][fn]) {
+    if (gCallbacks[id]?.[fn]) {
       gCallbacks[id][fn].apply(this, Array.prototype.slice.call(arguments, 2));
     } else {
       console.log(
@@ -945,7 +945,7 @@ Registry.require("syncinfo");
         }
       };
       const kk = "merge_" + type.id;
-      const vv = !!(i.options && i.options.override && i.options.override[kk]);
+      const vv = Boolean(i.options?.override && i.options.override[kk]);
 
       const cbs = HtmlUtil.createCheckbox(
         name,
@@ -959,7 +959,7 @@ Registry.require("syncinfo");
     s.title = i.desc ? i.desc : "";
 
     const values =
-      i.options && i.options.override && i.options.override[key]
+      i.options?.override && i.options.override[key]
         ? i.options.override[key]
         : [];
     const sel = crc("select", "cludes", key, i.id, "sel1");
@@ -2053,7 +2053,7 @@ Registry.require("syncinfo");
         if (i.nativeScript || !i.id || i.system) {
           lSync = "";
         } else {
-          if (i.sync && i.sync.imported) {
+          if (i.sync?.imported) {
             if (
               i.sync.imported === true ||
               i.sync.imported == SyncInfo.types.ePASTEBIN
@@ -2920,7 +2920,7 @@ Registry.require("syncinfo");
               error.reason.search("Mixed spaces and tabs") != -1;
             let len = 0;
             try {
-              const fixTabs = !!error.evidence && !detectTabs;
+              const fixTabs = Boolean(error.evidence) && !detectTabs;
               if (fixTabs) {
                 for (let p = 0, cp = 0; p < cara && cp < cara; p++, cp++) {
                   if (error.evidence.charCodeAt(p) == 9) {
