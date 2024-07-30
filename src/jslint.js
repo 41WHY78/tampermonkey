@@ -6253,7 +6253,7 @@ var JSLINT = (function () {
           warn("adsafe_bad_id");
         }
       }
-    }  
+    }
   }
 
   function do_tag(name, attribute) {
