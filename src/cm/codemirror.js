@@ -2855,11 +2855,7 @@ window.CodeMirror = (function () {
         );
       }
       if (changes.length || (newScrollPos && newScrollPos.scrollTop != null)) {
-        updated = updateDisplay(
-          changes,
-          true,
-          newScrollPos?.scrollTop,
-        );
+        updated = updateDisplay(changes, true, newScrollPos?.scrollTop);
       }
       if (!updated) {
         if (selectionChanged) updateSelection();

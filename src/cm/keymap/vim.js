@@ -1058,7 +1058,7 @@
       const cur = cm.getCursor();
       const line = cm.getLine(cur.line);
 
-      const line_to_char =  String(line.substring(0, cur.ch));
+      const line_to_char = String(line.substring(0, cur.ch));
       const start = regexLastIndexOf(line_to_char, /[^a-zA-Z0-9]/) + 1;
       const end = motions.E(cm, 1);
 
