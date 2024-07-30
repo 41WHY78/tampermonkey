@@ -21,7 +21,7 @@ var Registry = {
   checkLoading: function () {
     let l = false;
     for (const k in Registry.objects) {
-      if (!Registry.objects.hasOwnProperty(k)) continue;
+      if (!Object.prototype.hasOwnProperty.call(Registry.objects, k)) continue;
       if (Registry.objects[k] === null) {
         l = true;
         break;

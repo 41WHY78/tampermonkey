@@ -258,7 +258,7 @@ const V = false;
           let a = response.progress.action + "... ";
           if (!a || a == "") a = "";
           let p = "";
-          if (response.progress.state && response.progress.state.of) {
+          if (response.progress.state?.of) {
             p =
               " " +
               Math.round(

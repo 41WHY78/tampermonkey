@@ -154,7 +154,7 @@
       }
     } else {
       for (const k in arr) {
-        if (!arr.hasOwnProperty(k)) continue;
+        if (!Object.prototype.hasOwnProperty.call(arr, k)) continue;
         fn(arr[k], k);
       }
     }
@@ -163,7 +163,7 @@
   const serialize = function (o) {
     let ret = "";
     for (const k in o) {
-      if (!o.hasOwnProperty(k)) continue;
+      if (!Object.prototype.hasOwnProperty.call(o, k)) continue;
       if (ret != "") ret += ",";
       if (toType(o[k]) == "Object") {
         ret += k + ":" + serialize(o[k]);
@@ -194,7 +194,7 @@
   };
 
   const encodeHtml = function (str) {
-    return str.replace(/[\u00A0-\u2666]/g, function (c) {
+    return str.replace(/[\u00A0-\u2666]/gu, function (c) {
       return "&#" + c.charCodeAt(0) + ";";
     });
   };

@@ -60,7 +60,7 @@ var Hexdump = {
       dumped += " ";
     }
 
-    dumped += "    " + block.replace(/[\x00-\x1F]/g, ".");
+    dumped += "    " + block.replace(/[\x00-\x1F]/gu, ".");
 
     return dumped;
   },

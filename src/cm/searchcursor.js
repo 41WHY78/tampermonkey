@@ -35,7 +35,7 @@
           query.lastIndex = pos.ch;
           var line = cm.getLine(pos.line);
           var match = query.exec(line);
-          var start = match && match.index;
+          var start = match?.index;
         }
         if (match) {
           return {

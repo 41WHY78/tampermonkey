@@ -1173,7 +1173,7 @@ var JSLINT = (function () {
   const crlfx = /\r\n?|\n/;
   // unsafe characters that are silently deleted by one or more browsers
   const cx =
-    /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/;
+    /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/u;
   // query characters for ids
   const dx = /[\[\]\/\\"'*<>.&:(){}+=#]/;
   // html token
@@ -1188,7 +1188,7 @@ var JSLINT = (function () {
   const lx = /\*\/|\/\*/;
   // characters in strings that need escapement
   const nx =
-    /[\u0000-\u001f'\\\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+    /[\u0000-\u001f'\\\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/gu;
   // outer html token
   const ox = /[>&]|<[\/!]?|--/;
   // attributes characters
@@ -1208,7 +1208,7 @@ var JSLINT = (function () {
     /^\s*([(){}\[\]\?.,:;'"~#@`]|={1,3}|\/(\*(jslint|properties|property|members?|globals?)?|=|\/)?|\*[\/=]?|\+(?:=|\++)?|-(?:=|-+)?|[\^%]=?|&[&=]?|\|[|=]?|>{1,3}=?|<(?:[\/=!]|\!(\[|--)?|<=?)?|\!(\!|==?)?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+(?:[xX][0-9a-fA-F]+|\.[0-9]*)?(?:[eE][+\-]?[0-9]+)?)/;
   // url badness
   const ux =
-    /&|\+|\u00AD|\.\.|\/\*|%[^;]|base64|url|expression|data|mailto|script/i;
+    /&|\+|\u00AD|\.\.|\/\*|%[^;]|base64|url|expression|data|mailto|script/iu;
 
   const rx = {
     outer: hx,
@@ -1511,7 +1511,7 @@ var JSLINT = (function () {
         }
       }
       if (type === "(number)") {
-        the_token.number = +value;
+        the_token.number = Number(value);
       } else if (value !== undefined) {
         the_token.string = String(value);
       }
@@ -1691,7 +1691,7 @@ var JSLINT = (function () {
         warn_at("trailing_decimal_a", line, character, snippet);
       }
       if (xmode !== "style") {
-        digit = +snippet;
+        digit = Number(snippet);
         if (!isFinite(digit)) {
           warn_at("bad_number", line, character, snippet);
         }
@@ -1924,14 +1924,14 @@ var JSLINT = (function () {
                 warn_at(bundle.expected_number_a, line, from + length, c);
               }
               length += 1;
-              low = +c;
+              low = Number(c);
               for (;;) {
                 c = source_row.charAt(length);
                 if (c < "0" || c > "9") {
                   break;
                 }
                 length += 1;
-                low = +c + low * 10;
+                low = Number(c) + low * 10;
               }
               high = low;
               if (c === ",") {
@@ -1940,14 +1940,14 @@ var JSLINT = (function () {
                 c = source_row.charAt(length);
                 if (c >= "0" && c <= "9") {
                   length += 1;
-                  high = +c;
+                  high = Number(c);
                   for (;;) {
                     c = source_row.charAt(length);
                     if (c < "0" || c > "9") {
                       break;
                     }
                     length += 1;
-                    high = +c + high * 10;
+                    high = Number(c) + high * 10;
                   }
                 }
               }
@@ -2561,7 +2561,7 @@ var JSLINT = (function () {
     let open;
     if (typeof mode === "number") {
       indent = {
-        at: +mode,
+        at: Number(mode),
         open: true,
         was: indent,
       };
@@ -2595,7 +2595,7 @@ var JSLINT = (function () {
 
   function step_out(id, symbol) {
     if (id) {
-      if (indent && indent.open) {
+      if (indent?.open) {
         indent.at -= option.indent;
         edge();
       }
@@ -4358,7 +4358,7 @@ var JSLINT = (function () {
           warn("function_loop", get);
         }
         p = get.first;
-        if (p && p.length) {
+        if (p?.length) {
           warn("parameter_a_get_b", p[0], p[0].string, i);
         }
         comma();
@@ -5216,7 +5216,7 @@ var JSLINT = (function () {
       ) {
         no_space_only();
         advance();
-      } else if (+token.number !== 0) {
+      } else if (Number(token.number) !== 0) {
         warn("expected_linear_a");
       }
       return true;
@@ -6253,11 +6253,7 @@ var JSLINT = (function () {
           warn("adsafe_bad_id");
         }
       }
-    } else if (a === "name") {
-      if (option.adsafe && v.indexOf("_") >= 0) {
-        warn("adsafe_name_a", next_token, v);
-      }
-    }
+    }  
   }
 
   function do_tag(name, attribute) {
@@ -6668,8 +6664,8 @@ var JSLINT = (function () {
     } else {
       option = {};
     }
-    option.indent = +option.indent || 4;
-    option.maxerr = +option.maxerr || 50;
+    option.indent = Number(option.indent) || 4;
+    option.maxerr = Number(option.maxerr) || 50;
     adsafe_id = "";
     adsafe_may = adsafe_top = adsafe_went = false;
     approved = {};

@@ -14,9 +14,9 @@ window.CodeMirror = (function () {
     const options = {};
     const defaults = CodeMirror.defaults;
     for (const opt in defaults) {
-      if (defaults.hasOwnProperty(opt)) {
+      if (Object.prototype.hasOwnProperty.call(defaults, opt)) {
         options[opt] = (
-          givenOptions && givenOptions.hasOwnProperty(opt)
+          Object.prototype.hasOwnProperty.call(givenOptions, opt)
             ? givenOptions
             : defaults
         )[opt];
@@ -709,7 +709,7 @@ window.CodeMirror = (function () {
 
       if (!focused) onFocus();
 
-      const now = +new Date();
+      const now = Number(new Date());
       let type = "single";
       if (
         lastDoubleClick &&
@@ -849,7 +849,7 @@ window.CodeMirror = (function () {
       let pos = posFromMouse(e, true);
       const files = e.dataTransfer.files;
       if (!pos || options.readOnly) return;
-      if (files && files.length && window.FileReader && window.File) {
+      if (files?.length && window.FileReader && window.File) {
         const n = files.length;
         var text = Array(n);
         let read = 0;
@@ -1805,13 +1805,13 @@ window.CodeMirror = (function () {
             let text = options.lineNumbers
               ? options.lineNumberFormatter(i + options.firstLineNumber)
               : null;
-            if (marker && marker.text) {
+            if (marker?.text) {
               text = marker.text.replace("%N%", text != null ? text : "");
             } else if (text == null) {
               text = "\u00a0";
             }
             const markerElement = fragment.appendChild(
-              elt("pre", null, marker && marker.style),
+              elt("pre", null, marker?.style),
             );
             markerElement.innerHTML = text;
             for (let j = 1; j < line.height; ++j) {
@@ -2276,7 +2276,7 @@ window.CodeMirror = (function () {
       const marker = new TextMarker("range", className);
       if (options) {
         for (const opt in options) {
-          if (options.hasOwnProperty(opt)) {
+          if (Object.prototype.hasOwnProperty.call(options, opt)) {
             marker[opt] = options[opt];
           }
         }
@@ -2409,8 +2409,8 @@ window.CodeMirror = (function () {
         line: n,
         handle: line,
         text: line.text,
-        markerText: marker && marker.text,
-        markerClass: marker && marker.style,
+        markerText: marker?.text,
+        markerClass: marker?.style,
         lineClass: line.className,
         bgClass: line.bgClassName,
       };
@@ -2753,7 +2753,7 @@ window.CodeMirror = (function () {
         );
       const clear = operation(function () {
         one.clear();
-        two && two.clear();
+        two?.clear();
       });
       if (autoclear) setTimeout(clear, 800);
       else bracketHighlighted = clear;
@@ -2792,7 +2792,7 @@ window.CodeMirror = (function () {
     }
     function highlightWorker() {
       if (frontier >= showingTo) return;
-      const end = +new Date() + options.workTime;
+      const end = Number(new Date()) + options.workTime;
       const state = copyState(mode, getStateBefore(frontier));
       const startFrontier = frontier;
       doc.iter(frontier, showingTo, function (line) {
@@ -2805,7 +2805,7 @@ window.CodeMirror = (function () {
           line.stateAfter = frontier % 5 == 0 ? copyState(mode, state) : null;
         }
         ++frontier;
-        if (+new Date() > end) {
+        if (Number(new Date()) > end) {
           startWorker(options.workDelay);
           return true;
         }
@@ -2857,7 +2857,7 @@ window.CodeMirror = (function () {
         updated = updateDisplay(
           changes,
           true,
-          newScrollPos && newScrollPos.scrollTop,
+          newScrollPos?.scrollTop,
         );
       }
       if (!updated) {
@@ -2921,8 +2921,8 @@ window.CodeMirror = (function () {
 
     for (const ext in extensions) {
       if (
-        extensions.propertyIsEnumerable(ext) &&
-        !instance.propertyIsEnumerable(ext)
+        Object.propertyIsEnumerable.call(extensions, ext) &&
+        !Object.propertyIsEnumerable.call(instance, ext)
       ) {
         instance[ext] = extensions[ext];
       }
@@ -2999,7 +2999,7 @@ window.CodeMirror = (function () {
     mimeModes[mime] = spec;
   };
   CodeMirror.resolveMode = function (spec) {
-    if (typeof spec === "string" && mimeModes.hasOwnProperty(spec)) {
+    if (typeof spec === "string" && Object.prototype.hasOwnProperty.call(mimeModes, spec)) {
       spec = mimeModes[spec];
     } else if (
       typeof spec === "string" &&
@@ -3015,10 +3015,10 @@ window.CodeMirror = (function () {
     const mfactory = modes[spec.name];
     if (!mfactory) return CodeMirror.getMode(options, "text/plain");
     const modeObj = mfactory(options, spec);
-    if (modeExtensions.hasOwnProperty(spec.name)) {
+    if (Object.prototype.hasOwnProperty.call(modeExtensions, spec.name)) {
       const exts = modeExtensions[spec.name];
       for (const prop in exts) {
-        if (exts.hasOwnProperty(prop)) modeObj[prop] = exts[prop];
+        if (Object.prototype.hasOwnProperty.call(exts, prop)) modeObj[prop] = exts[prop];
       }
     }
     modeObj.name = spec.name;
@@ -3027,14 +3027,14 @@ window.CodeMirror = (function () {
   CodeMirror.listModes = function () {
     const list = [];
     for (const m in modes) {
-      if (modes.propertyIsEnumerable(m)) list.push(m);
+      if (Object.propertyIsEnumerable.call(modes, m)) list.push(m);
     }
     return list;
   };
   CodeMirror.listMIMEs = function () {
     const list = [];
     for (const m in mimeModes) {
-      if (mimeModes.propertyIsEnumerable(m)) {
+      if (Object.propertyIsEnumerable.call(mimeModes, m)) {
         list.push({ mime: m, mode: mimeModes[m] });
       }
     }
@@ -3053,11 +3053,11 @@ window.CodeMirror = (function () {
 
   var modeExtensions = (CodeMirror.modeExtensions = {});
   CodeMirror.extendMode = function (mode, properties) {
-    const exts = modeExtensions.hasOwnProperty(mode)
+    const exts = Object.prototype.hasOwnProperty.call(modeExtensions, mode)
       ? modeExtensions[mode]
       : (modeExtensions[mode] = {});
     for (const prop in properties) {
-      if (properties.hasOwnProperty(prop)) {
+      if (Object.prototype.hasOwnProperty.call(properties, prop)) {
         exts[prop] = properties[prop];
       }
     }
@@ -3445,7 +3445,7 @@ window.CodeMirror = (function () {
     },
     eatSpace: function () {
       const start = this.pos;
-      while (/[\s\u00a0]/.test(this.string.charAt(this.pos))) ++this.pos;
+      while (/[\s\u00a0]/u.test(this.string.charAt(this.pos))) ++this.pos;
       return this.pos > start;
     },
     skipToEnd: function () {
@@ -3749,7 +3749,7 @@ window.CodeMirror = (function () {
     getContent: function (tabSize, wrapAt, compensateForWrapping) {
       let first = true;
       let col = 0;
-      const specials = /[\t\u0000-\u0019\u200b\u2028\u2029\uFEFF]/g;
+      const specials = /[\t\u0000-\u0019\u200b\u2028\u2029\uFEFF]/gu;
       const pre = elt("pre");
       function span_(html, text, style) {
         if (!text) return;
@@ -4167,7 +4167,7 @@ window.CodeMirror = (function () {
   History.prototype = {
     addChange: function (start, added, old) {
       this.undone.length = 0;
-      const time = +new Date();
+      const time = Number(new Date());
       const cur = lst(this.done);
       const last = cur && lst(cur);
       const dtime = time - this.time;
@@ -4246,7 +4246,7 @@ window.CodeMirror = (function () {
   // Allow 3rd-party code to override event properties by adding an override
   // object to an event object.
   function e_prop(e, prop) {
-    const overridden = e.override && e.override.hasOwnProperty(prop);
+    const overridden = Object.prototype.hasOwnProperty.call(e.override, prop);
     return overridden ? e.override[prop] : e[prop];
   }
 
@@ -4326,7 +4326,7 @@ window.CodeMirror = (function () {
   // Used mostly to find indentation.
   function countColumn(string, end, tabSize) {
     if (end == null) {
-      end = string.search(/[^\s\u00a0]/);
+      end = string.search(/[^\s\u00a0]/u);
       if (end == -1) end = string.length;
     }
     for (var i = 0, n = 0; i < end; ++i) {
@@ -4438,7 +4438,7 @@ window.CodeMirror = (function () {
     return -1;
   }
   const nonASCIISingleCaseWordChar =
-    /[\u3040-\u309f\u30a0-\u30ff\u3400-\u4db5\u4e00-\u9fcc]/;
+    /[\u3040-\u309f\u30a0-\u30ff\u3400-\u4db5\u4e00-\u9fcc]/u;
   function isWordChar(ch) {
     return (
       /\w/.test(ch) ||
