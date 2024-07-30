@@ -463,7 +463,7 @@ var createUtilTab = function(tabv) {
     var tab = tabv.appendTab(Helper.createUniqueId(i.name, i.id), h, util);
 
     // TODO: hardcoded !!
-    if (50 > gOptions.configMode) {
+    if (gOptions.configMode < 50) {
         tab.hide();
     } else {
         tab.show();
