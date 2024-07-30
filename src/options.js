@@ -2359,7 +2359,7 @@ var myLINT = {
 
     cleanGutters : function(mirror, gutters) {
         for (var i in gutters) {
-            if (!gutters.hasOwnProperty(i)) continue;
+            if (!Object.prototype.hasOwnProperty.call(gutters, i)) continue;
             mirror.clearMarker(Number(i) - 1);
             if (gutters[i].marks) {
                 for (var k=0; k<gutters[i].marks.length; k++) {
@@ -2371,7 +2371,7 @@ var myLINT = {
 
     setGutters : function(mirror, gutters) {
         for (var i in gutters) {
-            if (!gutters.hasOwnProperty(i)) continue;
+            if (!Object.prototype.hasOwnProperty.call(gutters, i)) continue;
             var os = gutters[i];
             var level = 0;
             var img = null;
@@ -2599,7 +2599,7 @@ var modifyScriptOptions = function(name, options, reload, reorder) {
     try {
         var s = { method: "modifyScriptOptions", name: name, reload: reload, reorder: reorder };
         for (var k in options) {
-            if (!options.hasOwnProperty(k)) continue;
+            if (!Object.prototype.hasOwnProperty.call(options, k)) continue;
             s[k] = options[k];
         }
 

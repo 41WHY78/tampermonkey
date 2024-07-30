@@ -73,7 +73,7 @@
   }
 
   function iterObj(o, f) {
-    for (var prop in o) if (o.hasOwnProperty(prop)) f(prop, o[prop]);
+    for (var prop in o) if (Object.prototype.hasOwnProperty.call(o, prop)) f(prop, o[prop]);
   }
   function iterList(l, f) {
     for (var i = 0; i < l.length; ++i) f(l[i]);

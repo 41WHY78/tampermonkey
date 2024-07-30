@@ -139,7 +139,7 @@
             }
         } else {
             for (var k in arr) {
-                if (!arr.hasOwnProperty(k)) continue;
+                if (!Object.prototype.hasOwnProperty.call(arr, k)) continue;
                 fn(arr[k], k);
             }
         }
@@ -148,7 +148,7 @@
     var serialize = function(o) {
         var ret = '';
         for (var k in o) {
-            if (!o.hasOwnProperty(k)) continue;
+            if (!Object.prototype.hasOwnProperty.call(o, k)) continue;
             if (ret != '') ret += ',';
             if (toType(o[k]) == 'Object') {
                 ret += k + ':' + serialize(o[k]);

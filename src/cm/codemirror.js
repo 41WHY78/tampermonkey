@@ -13,8 +13,8 @@ window.CodeMirror = (function() {
     // Determine effective options based on given values and defaults.
     var options = {}, defaults = CodeMirror.defaults;
     for (var opt in defaults)
-      if (defaults.hasOwnProperty(opt))
-        options[opt] = (givenOptions && givenOptions.hasOwnProperty(opt) ? givenOptions : defaults)[opt];
+      if (Object.prototype.hasOwnProperty.call(defaults, opt))
+        options[opt] = (givenOptions && Object.prototype.hasOwnProperty.call(givenOptions, opt) ? givenOptions : defaults)[opt];
 
     var input = elt("textarea", null, null, "position: absolute; padding: 0; width: 1px; height: 1em");
     input.setAttribute("wrap", "off"); input.setAttribute("autocorrect", "off"); input.setAttribute("autocapitalize", "off");
@@ -1554,7 +1554,7 @@ window.CodeMirror = (function() {
     function markText(from, to, className, options) {
       from = clipPos(from); to = clipPos(to);
       var marker = new TextMarker("range", className);
-      if (options) for (var opt in options) if (options.hasOwnProperty(opt))
+      if (options) for (var opt in options) if (Object.prototype.hasOwnProperty.call(options, opt))
         marker[opt] = options[opt];
       var curLine = from.line;
       doc.iter(curLine, to.line + 1, function(line) {
@@ -1992,8 +1992,8 @@ window.CodeMirror = (function() {
     }
 
     for (var ext in extensions)
-      if (extensions.propertyIsEnumerable(ext) &&
-          !instance.propertyIsEnumerable(ext))
+      if (Object.propertyIsEnumerable.call(extensions, ext) &&
+          !Object.propertyIsEnumerable.call(instance, ext))
         instance[ext] = extensions[ext];
     for (var i = 0; i < initHooks.length; ++i) initHooks[i](instance);
     return instance;
@@ -2056,7 +2056,7 @@ window.CodeMirror = (function() {
     mimeModes[mime] = spec;
   };
   CodeMirror.resolveMode = function(spec) {
-    if (typeof spec == "string" && mimeModes.hasOwnProperty(spec))
+    if (typeof spec == "string" && Object.prototype.hasOwnProperty.call(mimeModes, spec))
       spec = mimeModes[spec];
     else if (typeof spec == "string" && /^[\w\-]+\/[\w\-]+\+xml$/.test(spec))
       return CodeMirror.resolveMode("application/xml");
@@ -2068,9 +2068,9 @@ window.CodeMirror = (function() {
     var mfactory = modes[spec.name];
     if (!mfactory) return CodeMirror.getMode(options, "text/plain");
     var modeObj = mfactory(options, spec);
-    if (modeExtensions.hasOwnProperty(spec.name)) {
+    if (Object.prototype.hasOwnProperty.call(modeExtensions, spec.name)) {
       var exts = modeExtensions[spec.name];
-      for (var prop in exts) if (exts.hasOwnProperty(prop)) modeObj[prop] = exts[prop];
+      for (var prop in exts) if (Object.prototype.hasOwnProperty.call(exts, prop)) modeObj[prop] = exts[prop];
     }
     modeObj.name = spec.name;
     return modeObj;
@@ -2078,13 +2078,13 @@ window.CodeMirror = (function() {
   CodeMirror.listModes = function() {
     var list = [];
     for (var m in modes)
-      if (modes.propertyIsEnumerable(m)) list.push(m);
+      if (Object.propertyIsEnumerable.call(modes, m)) list.push(m);
     return list;
   };
   CodeMirror.listMIMEs = function() {
     var list = [];
     for (var m in mimeModes)
-      if (mimeModes.propertyIsEnumerable(m)) list.push({mime: m, mode: mimeModes[m]});
+      if (Object.propertyIsEnumerable.call(mimeModes, m)) list.push({mime: m, mode: mimeModes[m]});
     return list;
   };
 
@@ -2098,8 +2098,8 @@ window.CodeMirror = (function() {
 
   var modeExtensions = CodeMirror.modeExtensions = {};
   CodeMirror.extendMode = function(mode, properties) {
-    var exts = modeExtensions.hasOwnProperty(mode) ? modeExtensions[mode] : (modeExtensions[mode] = {});
-    for (var prop in properties) if (properties.hasOwnProperty(prop))
+    var exts = Object.prototype.hasOwnProperty.call(modeExtensions, mode) ? modeExtensions[mode] : (modeExtensions[mode] = {});
+    for (var prop in properties) if (Object.prototype.hasOwnProperty.call(properties, prop))
       exts[prop] = properties[prop];
   };
 
@@ -2967,7 +2967,7 @@ window.CodeMirror = (function() {
   // Allow 3rd-party code to override event properties by adding an override
   // object to an event object.
   function e_prop(e, prop) {
-    var overridden = e.override && e.override.hasOwnProperty(prop);
+    var overridden = e.override && Object.prototype.hasOwnProperty.call(e.override, prop);
     return overridden ? e.override[prop] : e[prop];
   }
 
