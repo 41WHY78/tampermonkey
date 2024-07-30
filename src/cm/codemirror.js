@@ -2854,11 +2854,7 @@ window.CodeMirror = (function () {
         );
       }
       if (changes.length || (newScrollPos && newScrollPos.scrollTop != null)) {
-        updated = updateDisplay(
-          changes,
-          true,
-          newScrollPos?.scrollTop,
-        );
+        updated = updateDisplay(changes, true, newScrollPos?.scrollTop);
       }
       if (!updated) {
         if (selectionChanged) updateSelection();
@@ -2999,7 +2995,10 @@ window.CodeMirror = (function () {
     mimeModes[mime] = spec;
   };
   CodeMirror.resolveMode = function (spec) {
-    if (typeof spec === "string" && Object.prototype.hasOwnProperty.call(mimeModes, spec)) {
+    if (
+      typeof spec === "string" &&
+      Object.prototype.hasOwnProperty.call(mimeModes, spec)
+    ) {
       spec = mimeModes[spec];
     } else if (
       typeof spec === "string" &&
@@ -3018,7 +3017,9 @@ window.CodeMirror = (function () {
     if (Object.prototype.hasOwnProperty.call(modeExtensions, spec.name)) {
       const exts = modeExtensions[spec.name];
       for (const prop in exts) {
-        if (Object.prototype.hasOwnProperty.call(exts, prop)) modeObj[prop] = exts[prop];
+        if (Object.prototype.hasOwnProperty.call(exts, prop)) {
+          modeObj[prop] = exts[prop];
+        }
       }
     }
     modeObj.name = spec.name;

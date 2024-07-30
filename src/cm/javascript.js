@@ -151,7 +151,8 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     } else {
       stream.eatWhile(/[\w\$_]/);
       const word = stream.current();
-      const known = Object.propertyIsEnumerable.call(keywords, word) && keywords[word];
+      const known =
+        Object.propertyIsEnumerable.call(keywords, word) && keywords[word];
       return known && state.lastType != "."
         ? ret(known.type, known.style, word)
         : ret("variable", "variable", word);
@@ -213,7 +214,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     cx.stream = stream;
     (cx.marked = null), (cx.cc = cc);
 
-    if (!Object.prototype.hasOwnProperty.call(state.lexical, 'align')) {
+    if (!Object.prototype.hasOwnProperty.call(state.lexical, "align")) {
       state.lexical.align = true;
     }
 
@@ -352,7 +353,9 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     return pass(pushlex("stat"), expression, expect(";"), poplex);
   }
   function expression(type) {
-    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) return cont(maybeoperator);
+    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) {
+      return cont(maybeoperator);
+    }
     if (type == "function") return cont(functiondef);
     if (type == "keyword c") return cont(maybeexpression);
     if (type == "(") {
@@ -414,7 +417,9 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
   }
   function objprop(type) {
     if (type == "variable") cx.marked = "property";
-    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) return cont(expect(":"), expression);
+    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) {
+      return cont(expect(":"), expression);
+    }
   }
   function commasep(what, end) {
     function proceed(type) {
@@ -516,7 +521,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
 
     token: function (stream, state) {
       if (stream.sol()) {
-        if (!Object.prototype.hasOwnProperty.call(state.lexical, 'align')) {
+        if (!Object.prototype.hasOwnProperty.call(state.lexical, "align")) {
           state.lexical.align = false;
         }
         state.indented = stream.indentation();
