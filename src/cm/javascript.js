@@ -151,7 +151,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     } else {
       stream.eatWhile(/[\w\$_]/);
       const word = stream.current();
-      const known = keywords.propertyIsEnumerable(word) && keywords[word];
+      const known = Object.propertyIsEnumerable.call(keywords, word) && keywords[word];
       return known && state.lastType != "."
         ? ret(known.type, known.style, word)
         : ret("variable", "variable", word);
@@ -213,7 +213,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     cx.stream = stream;
     (cx.marked = null), (cx.cc = cc);
 
-    if (!state.lexical.hasOwnProperty("align")) {
+    if (!Object.prototype.hasOwnProperty.call(state.lexical, 'align')) {
       state.lexical.align = true;
     }
 
@@ -352,7 +352,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     return pass(pushlex("stat"), expression, expect(";"), poplex);
   }
   function expression(type) {
-    if (atomicTypes.hasOwnProperty(type)) return cont(maybeoperator);
+    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) return cont(maybeoperator);
     if (type == "function") return cont(functiondef);
     if (type == "keyword c") return cont(maybeexpression);
     if (type == "(") {
@@ -414,7 +414,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
   }
   function objprop(type) {
     if (type == "variable") cx.marked = "property";
-    if (atomicTypes.hasOwnProperty(type)) return cont(expect(":"), expression);
+    if (Object.prototype.hasOwnProperty.call(atomicTypes, type)) return cont(expect(":"), expression);
   }
   function commasep(what, end) {
     function proceed(type) {
@@ -516,7 +516,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
 
     token: function (stream, state) {
       if (stream.sol()) {
-        if (!state.lexical.hasOwnProperty("align")) {
+        if (!Object.prototype.hasOwnProperty.call(state.lexical, 'align')) {
           state.lexical.align = false;
         }
         state.indented = stream.indentation();
@@ -531,7 +531,7 @@ CodeMirror.defineMode("javascript", function (config, parserConfig) {
     indent: function (state, textAfter) {
       if (state.tokenize == jsTokenComment) return CodeMirror.Pass;
       if (state.tokenize != jsTokenBase) return 0;
-      const firstChar = textAfter && textAfter.charAt(0);
+      const firstChar = textAfter?.charAt(0);
       let lexical = state.lexical;
       if (lexical.type == "stat" && firstChar == "}") lexical = lexical.prev;
       const type = lexical.type;
