@@ -2991,21 +2991,21 @@ window.CodeMirror = (function() {
   var Pass = CodeMirror.Pass = {toString: function(){return "CodeMirror.Pass";}};
 
   // Detect drag-and-drop
-  var dragAndDrop = function() {
+  var dragAndDrop = (function() {
     // There is *some* kind of drag-and-drop support in IE6-8, but I
     // couldn't get it to work yet.
     if (ie_lt9) return false;
     var div = elt('div');
     return "draggable" in div || "dragDrop" in div;
-  }();
+  }());
 
   // Feature-detect whether newlines in textareas are converted to \r\n
-  var lineSep = function () {
+  var lineSep = (function () {
     var te = elt("textarea");
     te.value = "foo\nbar";
     if (te.value.indexOf("\r") > -1) return "\r\n";
     return "\n";
-  }();
+  }());
 
   // For a reason I have yet to figure out, some browsers disallow
   // word wrapping between certain characters *only* if a new inline
