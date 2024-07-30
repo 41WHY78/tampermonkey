@@ -945,7 +945,7 @@ Registry.require("syncinfo");
         }
       };
       const kk = "merge_" + type.id;
-      const vv = !!(i.options?.override && i.options.override[kk]);
+      const vv = Boolean(i.options?.override && i.options.override[kk]);
 
       const cbs = HtmlUtil.createCheckbox(
         name,
@@ -2822,7 +2822,7 @@ Registry.require("syncinfo");
 
     cleanGutters: function (mirror, gutters) {
       for (const i in gutters) {
-        if (!gutters.hasOwnProperty(i)) continue;
+        if (!Object.prototype.hasOwnProperty.call(gutters, i)) continue;
         mirror.clearMarker(Number(i) - 1);
         if (gutters[i].marks) {
           for (let k = 0; k < gutters[i].marks.length; k++) {
@@ -2834,7 +2834,7 @@ Registry.require("syncinfo");
 
     setGutters: function (mirror, gutters) {
       for (const i in gutters) {
-        if (!gutters.hasOwnProperty(i)) continue;
+        if (!Object.prototype.hasOwnProperty.call(gutters, i)) continue;
         const os = gutters[i];
         let level = 0;
         let img = null;
@@ -2920,7 +2920,7 @@ Registry.require("syncinfo");
               error.reason.search("Mixed spaces and tabs") != -1;
             let len = 0;
             try {
-              const fixTabs = !!error.evidence && !detectTabs;
+              const fixTabs = Boolean(error.evidence) && !detectTabs;
               if (fixTabs) {
                 for (let p = 0, cp = 0; p < cara && cp < cara; p++, cp++) {
                   if (error.evidence.charCodeAt(p) == 9) {
@@ -3099,7 +3099,7 @@ Registry.require("syncinfo");
     try {
       const s = { method: "modifyScriptOptions", name, reload, reorder };
       for (const k in options) {
-        if (!options.hasOwnProperty(k)) continue;
+        if (!Object.prototype.hasOwnProperty.call(options, k)) continue;
         s[k] = options[k];
       }
 
