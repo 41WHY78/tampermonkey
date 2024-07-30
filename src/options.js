@@ -45,8 +45,7 @@ var gArgs = Helper.getUrlArgs();
 /* ########### callbacks ############## */
 var gCallbacks = {};
 var gCb = function(id, fn) {
-     if (gCallbacks[id] &&
-         gCallbacks[id][fn]) {
+     if (gCallbacks[id]?.[fn]) {
          gCallbacks[id][fn].apply(this, Array.prototype.slice.call(arguments, 2));
      } else {
          console.log("option: WARN: unable to find callback '" + fn + "' for id '" + id + "'");
@@ -811,7 +810,7 @@ var createCludesEditor = function(name, type, other_name) {
             }
         };
         var kk = 'merge_' + type.id;
-        var vv = (i.options && i.options.override && i.options.override[kk]) ? true : false;
+        var vv = (i.options?.override && i.options.override[kk]) ? true : false;
 
         var cbs = HtmlUtil.createCheckbox(name,
                               { id: kk, name: i.name, enabled: vv },
@@ -822,7 +821,7 @@ var createCludesEditor = function(name, type, other_name) {
     }
     s.title = i.desc ? i.desc : '';
 
-    var values = (i.options && i.options.override && i.options.override[key]) ? i.options.override[key] : [];
+    var values = (i.options?.override && i.options.override[key]) ? i.options.override[key] : [];
     var sel = crc('select', 'cludes', key, i.id, 'sel1');
     sel.setAttribute('size', '6');
     for (var n=0; n<values.length; n++) {
@@ -1690,7 +1689,7 @@ var createScriptItem = function(i, tr, tabv) {
             if (i.nativeScript || !i.id || i.system) {
                 lSync = '';
             } else {
-                if (i.sync && i.sync.imported) {
+                if (i.sync?.imported) {
                     if (i.sync.imported === true ||
                         i.sync.imported == SyncInfo.types.ePASTEBIN) {
                         

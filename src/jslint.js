@@ -2306,7 +2306,7 @@ klass:              do {
 
     function step_out(id, symbol) {
         if (id) {
-            if (indent && indent.open) {
+            if (indent?.open) {
                 indent.at -= option.indent;
                 edge();
             }
@@ -3944,7 +3944,7 @@ klass:              do {
                     warn('function_loop', get);
                 }
                 p = get.first;
-                if (p && p.length) {
+                if (p?.length) {
                     warn('parameter_a_get_b', p[0], p[0].string, i);
                 }
                 comma();

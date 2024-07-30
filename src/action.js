@@ -231,7 +231,7 @@ var getFireItems = function(tabid, cb) {
                 var a = response.progress.action + '... ';
                 if (!a || a == "") a = "";
                 var p = "";
-                if (response.progress.state && response.progress.state.of) {
+                if (response.progress.state?.of) {
                     p = ' ' + Math.round(response.progress.state.n * 100 / response.progress.state.of) + '%';
                 }
                 c = (a != "" || p != "") ? a + p : null;

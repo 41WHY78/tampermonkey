@@ -14,7 +14,7 @@ window.CodeMirror = (function() {
     var options = {}, defaults = CodeMirror.defaults;
     for (var opt in defaults)
       if (defaults.hasOwnProperty(opt))
-        options[opt] = (givenOptions && givenOptions.hasOwnProperty(opt) ? givenOptions : defaults)[opt];
+        options[opt] = (givenOptions?.hasOwnProperty(opt) ? givenOptions : defaults)[opt];
 
     var input = elt("textarea", null, null, "position: absolute; padding: 0; width: 1px; height: 1em");
     input.setAttribute("wrap", "off"); input.setAttribute("autocorrect", "off"); input.setAttribute("autocapitalize", "off");
@@ -554,7 +554,7 @@ window.CodeMirror = (function() {
       e_preventDefault(e);
       var pos = posFromMouse(e, true), files = e.dataTransfer.files;
       if (!pos || options.readOnly) return;
-      if (files && files.length && window.FileReader && window.File) {
+      if (files?.length && window.FileReader && window.File) {
         var n = files.length, text = Array(n), read = 0;
         var loadFile = function(file, i) {
           var reader = new FileReader;
@@ -1217,11 +1217,11 @@ window.CodeMirror = (function() {
         } else {
           var marker = line.gutterMarker;
           var text = options.lineNumbers ? options.lineNumberFormatter(i + options.firstLineNumber) : null;
-          if (marker && marker.text)
+          if (marker?.text)
             text = marker.text.replace("%N%", text != null ? text : "");
           else if (text == null)
             text = "\u00a0";
-          var markerElement = fragment.appendChild(elt("pre", null, marker && marker.style));
+          var markerElement = fragment.appendChild(elt("pre", null, marker?.style));
           markerElement.innerHTML = text;
           for (var j = 1; j < line.height; ++j) {
             markerElement.appendChild(elt("br"));
@@ -1657,8 +1657,8 @@ window.CodeMirror = (function() {
         if (n == null) return null;
       }
       var marker = line.gutterMarker;
-      return {line: n, handle: line, text: line.text, markerText: marker && marker.text,
-              markerClass: marker && marker.style, lineClass: line.className, bgClass: line.bgClassName};
+      return {line: n, handle: line, text: line.text, markerText: marker?.text,
+              markerClass: marker?.style, lineClass: line.className, bgClass: line.bgClassName};
     }
 
     function measureLine(line, ch) {
@@ -1868,7 +1868,7 @@ window.CodeMirror = (function() {
       var style = found.match ? "CodeMirror-matchingbracket" : "CodeMirror-nonmatchingbracket";
       var one = markText({line: head.line, ch: pos}, {line: head.line, ch: pos+1}, style),
           two = found.pos != null && markText({line: i, ch: found.pos}, {line: i, ch: found.pos + 1}, style);
-      var clear = operation(function(){one.clear(); two && two.clear();});
+      var clear = operation(function(){one.clear(); two?.clear();});
       if (autoclear) setTimeout(clear, 800);
       else bracketHighlighted = clear;
     }
@@ -1952,7 +1952,7 @@ window.CodeMirror = (function() {
         newScrollPos = calculateScrollPos(coords.x, coords.y, coords.x, coords.yBot);
       }
       if (changes.length || newScrollPos && newScrollPos.scrollTop != null)
-        updated = updateDisplay(changes, true, newScrollPos && newScrollPos.scrollTop);
+        updated = updateDisplay(changes, true, newScrollPos?.scrollTop);
       if (!updated) {
         if (selectionChanged) updateSelection();
         if (gutterDirty) updateGutter();
@@ -2967,7 +2967,7 @@ window.CodeMirror = (function() {
   // Allow 3rd-party code to override event properties by adding an override
   // object to an event object.
   function e_prop(e, prop) {
-    var overridden = e.override && e.override.hasOwnProperty(prop);
+    var overridden = e.override?.hasOwnProperty(prop);
     return overridden ? e.override[prop] : e[prop];
   }
 

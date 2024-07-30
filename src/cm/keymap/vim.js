@@ -361,7 +361,7 @@
       emptyBuffer();
       iterTimes(function(i) { pushInBuffer("\n" + cm.getLine(cm.getCursor().line + i)); });
     },
-    "/": function(cm) {var f = CodeMirror.commands.find; f && f(cm); sdir = "f";},
+    "/": function(cm) {var f = CodeMirror.commands.find; f?.(cm); sdir = "f";},
     "'?'": function(cm) {
       var f = CodeMirror.commands.find;
       if (f) { f(cm); CodeMirror.commands.findPrev(cm); sdir = "r"; }

@@ -28,7 +28,7 @@
         } else {
           query.lastIndex = pos.ch;
           var line = cm.getLine(pos.line), match = query.exec(line),
-          start = match && match.index;
+          start = match?.index;
         }
         if (match)
           return {from: {line: pos.line, ch: start},

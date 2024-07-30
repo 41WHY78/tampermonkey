@@ -385,7 +385,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     indent: function(state, textAfter) {
       if (state.tokenize == jsTokenComment) return CodeMirror.Pass;
       if (state.tokenize != jsTokenBase) return 0;
-      var firstChar = textAfter && textAfter.charAt(0), lexical = state.lexical;
+      var firstChar = textAfter?.charAt(0), lexical = state.lexical;
       if (lexical.type == "stat" && firstChar == "}") lexical = lexical.prev;
       var type = lexical.type, closing = firstChar == type;
       if (type == "vardef") return lexical.indented + (state.lastType == "operator" || state.lastType == "," ? 4 : 0);
